@@ -9,15 +9,29 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "lint": "eslint .",
     "build": "esbuild src/index.js --bundle --platform=node --format=esm --minify --outfile=dist/index.js --banner:js=\"#!/usr/bin/env node\"",
     "prepublishOnly": "npm run lint && npm run build",
     "release": "npm version patch && npm publish"
   },
-  "keywords": [],
+  "keywords": [
+    "env",
+    "dotenv",
+    "cli",
+    "environment",
+    "generator"
+  ],
   "author": "Kyrylo Voronoi",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyrylovoronoi/env-creator.git"
+  },
+  "homepage": "https://github.com/kyrylovoronoi/env-creator",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "esbuild": "^0.27.3",
