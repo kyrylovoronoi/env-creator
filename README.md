@@ -72,7 +72,37 @@ env-creator delete            # Deletes .env
 env-creator delete .env.prod  # Deletes .env.prod
 ```
 
-### 4. Split `.env` for Specific Environments
+### 4. Sort `.env` keys alphabetically
+
+Reads an environment file and reorders all `KEY=VALUE` lines alphabetically. Comments and empty lines are preserved at the top of the file. Defaults to `.env` if no file is specified.
+
+```bash
+env-creator sort [file]
+```
+
+**Examples:**
+```bash
+env-creator sort               		# Sorts .env
+env-creator sort .env.production	# Sorts .env.production
+```
+
+**Before:**
+```env
+# App config
+PORT=3000
+APP_NAME=my-app
+DB_HOST=localhost
+```
+
+**After:**
+```env
+# App config
+APP_NAME=my-app
+DB_HOST=localhost
+PORT=3000
+```
+
+### 5. Split `.env` for Specific Environments
 
 Reads your existing `.env` file, removes all comments and values, and creates a new target file containing **only the keys** (e.g., for creating a `.env.example` or `.env.production` template).
 

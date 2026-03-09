@@ -9,8 +9,9 @@ if (args.length === 0) {
     console.log("Commands:");
     console.log("  create                  Create an empty .env file");
     console.log("  create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
-	console.log("  delete [file]           Delete an environment file (default: .env)");
-	console.log("  split --env <dev|prod>  Create environment-specific file from .env");
+    console.log("  delete [file]           Delete an environment file (default: .env)");
+    console.log("  sort [file]             Sort keys alphabetically in an env file (default: .env)");
+    console.log("  split --env <dev|prod>  Create environment-specific file from .env");
     process.exit(0);
 }
 
@@ -112,6 +113,40 @@ switch (command) {
             console.log(`Deleted ${targetFile}`);
         }
 
+        break;
+    }
+
+    // sort keys in an env file alphabetically
+    case 'sort': {
+        const targetFile = args[1] || '.env';
+        const targetPath = path.join(process.cwd(), targetFile);
+
+        if (!fs.existsSync(targetPath)) {
+            console.error(`File ${targetFile} does not exist`);
+            process.exit(1);
+        }
+
+        const rawLines = fs.readFileSync(targetPath, 'utf-8').split(/\r?\n/);
+
+        // strip trailing empty line if file ends with a newline
+        const lines = rawLines[rawLines.length - 1] === '' ? rawLines.slice(0, -1) : rawLines;
+
+        const entries = lines
+            .filter(line => !line.startsWith('#') && line.trim() !== '' && line.includes('='))
+            .sort((a, b) => a.localeCompare(b));
+
+        let entryIdx = 0;
+
+        const sorted = lines.map(line => {
+            if (!line.startsWith('#') && line.trim() !== '' && line.includes('=')) {
+                return entries[entryIdx++];
+            }
+
+            return line;
+        });
+
+        fs.writeFileSync(targetPath, sorted.join('\n') + '\n');
+        console.log(`Sorted keys in ${targetFile}`);
         break;
     }
 
