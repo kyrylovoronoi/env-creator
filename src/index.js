@@ -5,17 +5,28 @@ import path from 'path';
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
+	showHelp();
+	process.exit(0);
+}
+
+function showHelp() {
     console.log("Usage: env-creator <command> [options]");
     console.log("Commands:");
     console.log("  create                  Create an empty .env file");
     console.log("  create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
-	console.log("  split --env <dev|prod>  Create environment-specific file from .env");
-	console.log("  delete [file]           Delete an environment file (default: .env)");
-	console.log("  sort [file]             Sort keys alphabetically in an env file (default: .env)");
-    process.exit(0);
+    console.log("  split --env <dev|prod>  Create environment-specific file from .env");
+    console.log("  delete [file]           Delete an environment file (default: .env)");
+    console.log("  sort [file]             Sort keys alphabetically in an env file (default: .env)");
+    console.log("Options:");
+    console.log("  -h, --help              Show this help message");
 }
 
 const command = args[0];
+
+if (command === '--help' || command === '-h' || command === 'help') {
+	showHelp();
+	process.exit(0);
+}
 
 switch (command) {
     // create an empty .env
@@ -151,6 +162,7 @@ switch (command) {
     }
 
     default:
-        console.error('Unknown command');
+        console.error(`Unknown command: "${command}"\n`);
+        showHelp();
         process.exit(1);
 }
