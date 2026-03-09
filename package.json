@@ -1,0 +1,17 @@
+{
+  "name": "env-creator",
+  "version": "1.0.0",
+  "description": "Environment variable generator CLI",
+  "type": "module",
+  "bin": {
+    "env-creator": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {},
+  "keywords": [],
+  "author": "Kyrylo Voronoi",
+  "license": "MIT",
+  "devDependencies": {}
+}
