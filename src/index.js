@@ -9,6 +9,7 @@ if (args.length === 0) {
     console.log("Commands:");
     console.log("  create                  Create an empty .env file");
     console.log("  create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
+    console.log("  split --env <dev|prod>  Create environment-specific file from .env");
     process.exit(0);
 }
 
@@ -56,6 +57,35 @@ switch (command) {
 
         fs.writeFileSync(targetEnvFile, envContent);
         console.log(`Created ${targetEnvFile} from JSON`);
+        break;
+    }
+
+    // create .env.[name] with empty values
+    case 'split': {
+        const envArgIndex = args.indexOf('--env');
+
+        if (envArgIndex === -1 || !args[envArgIndex + 1]) {
+            console.error('Please specify environment with --env <dev|prod>');
+            process.exit(1);
+        }
+
+        const envName = args[envArgIndex + 1];
+        const sourcePath = path.join(process.cwd(), '.env');
+
+        if (!fs.existsSync(sourcePath)) {
+            console.error('.env file not found');
+            process.exit(1);
+        }
+
+        const lines = fs.readFileSync(sourcePath, 'utf-8').split(/\r?\n/);
+        const strippedLines = lines
+            .filter(line => line.trim() !== '' && !line.startsWith('#'))
+            .map(line => line.split('=')[0] + '=')
+            .join('\n');
+        const targetPath = path.join(process.cwd(), `.env.${envName}`);
+
+        fs.writeFileSync(targetPath, strippedLines);
+        console.log(`Created .env.${envName} with keys only`);
         break;
     }
 
