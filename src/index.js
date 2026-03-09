@@ -5,14 +5,14 @@ import path from 'path';
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-	showHelp();
-	process.exit(0);
+    showHelp();
+    process.exit(0);
 }
 
 function showHelp() {
     console.log("Usage: env-creator <command> [options]");
     console.log("Commands:");
-    console.log("  create                  Create an empty .env file");
+    console.log("  create [KEY=value...]   Create a .env file (optionally with values)");
     console.log("  create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
     console.log("  split --env <dev|prod>  Create environment-specific file from .env");
     console.log("  delete [file]           Delete an environment file (default: .env)");
@@ -24,8 +24,8 @@ function showHelp() {
 const command = args[0];
 
 if (command === '--help' || command === '-h' || command === 'help') {
-	showHelp();
-	process.exit(0);
+    showHelp();
+    process.exit(0);
 }
 
 switch (command) {
@@ -36,8 +36,21 @@ switch (command) {
         if (fs.existsSync(envPath)) {
             console.log('.env already exists');
         } else {
-            fs.writeFileSync(envPath, '');
-            console.log('Created empty .env');
+            const fieldsArgs = args.slice(1);
+            let envContent = '';
+
+            if (fieldsArgs.length > 0) {
+                const validFields = fieldsArgs.filter(arg => arg.includes('='));
+                envContent = validFields.join('\n') + (validFields.length > 0 ? '\n' : '');
+            }
+
+            fs.writeFileSync(envPath, envContent);
+
+            if (envContent) {
+                console.log('Created .env with specified fields');
+            } else {
+                console.log('Created empty .env');
+            }
         }
 
         break;
