@@ -9,9 +9,9 @@ if (args.length === 0) {
     console.log("Commands:");
     console.log("  create                  Create an empty .env file");
     console.log("  create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
-    console.log("  delete [file]           Delete an environment file (default: .env)");
-    console.log("  sort [file]             Sort keys alphabetically in an env file (default: .env)");
-    console.log("  split --env <dev|prod>  Create environment-specific file from .env");
+	console.log("  split --env <dev|prod>  Create environment-specific file from .env");
+	console.log("  delete [file]           Delete an environment file (default: .env)");
+	console.log("  sort [file]             Sort keys alphabetically in an env file (default: .env)");
     process.exit(0);
 }
 

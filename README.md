@@ -20,7 +20,7 @@ npx env-creator <command> [options]
 
 `env-creator` provides several commands to help you quickly set up or split your environment files.
 
-### 1. Create an Empty `.env` File
+### 1. Create an empty `.env` file
 
 Generates a blank `.env` file in the current working directory. If a file already exists, it will not overwrite it.
 
@@ -58,7 +58,34 @@ DB_HOST=localhost
 NODE_ENV=development
 ```
 
-### 3. Delete an `.env` File
+### 3. Split `.env` for specific environments
+
+Reads your existing `.env` file, removes all comments and values, and creates a new target file containing **only the keys** (e.g., for creating a `.env.example` or `.env.production` template).
+
+```bash
+env-creator split --env <env-name>
+```
+
+**Example:**
+If you have a `.env` file like this:
+```env
+# Database Config
+DB_USER=admin
+DB_PASS=secret
+```
+
+Running the split command for production:
+```bash
+env-creator split --env production
+```
+
+Will generate a new file named `.env.production` with empty values:
+```env
+DB_USER=
+DB_PASS=
+```
+
+### 4. Delete an `.env` file
 
 Deletes a specific environment file. If no filename is provided, it defaults to deleting `.env`.
 
@@ -68,11 +95,11 @@ env-creator delete [file]
 
 **Examples:**
 ```bash
-env-creator delete            # Deletes .env
-env-creator delete .env.prod  # Deletes .env.prod
+env-creator delete            		# Deletes .env
+env-creator delete .env.production  # Deletes .env.production
 ```
 
-### 4. Sort `.env` keys alphabetically
+### 5. Sort `.env` keys alphabetically
 
 Reads an environment file and reorders all `KEY=VALUE` lines alphabetically. Comments and empty lines are preserved at the top of the file. Defaults to `.env` if no file is specified.
 
@@ -100,33 +127,6 @@ DB_HOST=localhost
 APP_NAME=my-app
 DB_HOST=localhost
 PORT=3000
-```
-
-### 5. Split `.env` for Specific Environments
-
-Reads your existing `.env` file, removes all comments and values, and creates a new target file containing **only the keys** (e.g., for creating a `.env.example` or `.env.production` template).
-
-```bash
-env-creator split --env <env-name>
-```
-
-**Example:**
-If you have a `.env` file like this:
-```env
-# Database Config
-DB_USER=admin
-DB_PASS=secret
-```
-
-Running the split command for production:
-```bash
-env-creator split --env production
-```
-
-Will generate a new file named `.env.production` with empty values:
-```env
-DB_USER=
-DB_PASS=
 ```
 
 ## Development
