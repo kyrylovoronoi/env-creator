@@ -4,7 +4,8 @@
   "description": "Environment variable generator CLI",
   "type": "module",
   "bin": {
-    "env-creator": "./dist/cli.js"
+    "env-creator": "./dist/cli.js",
+    "create-env": "./dist/cli.js"
   },
   "exports": {
     ".": "./dist/index.js"
