@@ -48,6 +48,11 @@ switch (command) {
         const envSuffix = (envArgIndex !== -1 && args[envArgIndex + 1]) ? `.${args[envArgIndex + 1]}` : '';
         const targetEnvFile = `.env${envSuffix}`;
 
+        if (fs.existsSync(targetEnvFile)) {
+            console.log(`${targetEnvFile} already exists`);
+            break;
+        }
+
         const jsonData = JSON.parse(fs.readFileSync(jsonFile, 'utf-8'));
         let envContent = '';
 
@@ -83,6 +88,11 @@ switch (command) {
             .map(line => line.split('=')[0] + '=')
             .join('\n');
         const targetPath = path.join(process.cwd(), `.env.${envName}`);
+
+        if (fs.existsSync(targetPath)) {
+            console.log(`.env.${envName} already exists`);
+            break;
+        }
 
         fs.writeFileSync(targetPath, strippedLines);
         console.log(`Created .env.${envName} with keys only`);
