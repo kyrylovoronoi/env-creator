@@ -10,13 +10,16 @@
     "dist"
   ],
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "esbuild src/index.js --bundle --platform=node --format=esm --minify --outfile=dist/index.js --banner:js=\"#!/usr/bin/env node\""
   },
   "keywords": [],
   "author": "Kyrylo Voronoi",
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.0.3"
+    "esbuild": "^0.27.3",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0"
   }
 }
