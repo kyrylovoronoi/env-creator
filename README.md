@@ -58,7 +58,21 @@ DB_HOST=localhost
 NODE_ENV=development
 ```
 
-### 3. Split `.env` for Specific Environments
+### 3. Delete an `.env` File
+
+Deletes a specific environment file. If no filename is provided, it defaults to deleting `.env`.
+
+```bash
+env-creator delete [file]
+```
+
+**Examples:**
+```bash
+env-creator delete            # Deletes .env
+env-creator delete .env.prod  # Deletes .env.prod
+```
+
+### 4. Split `.env` for Specific Environments
 
 Reads your existing `.env` file, removes all comments and values, and creates a new target file containing **only the keys** (e.g., for creating a `.env.example` or `.env.production` template).
 

@@ -9,7 +9,8 @@ if (args.length === 0) {
     console.log("Commands:");
     console.log("  create                  Create an empty .env file");
     console.log("  create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
-    console.log("  split --env <dev|prod>  Create environment-specific file from .env");
+	console.log("  delete [file]           Delete an environment file (default: .env)");
+	console.log("  split --env <dev|prod>  Create environment-specific file from .env");
     process.exit(0);
 }
 
@@ -96,6 +97,21 @@ switch (command) {
 
         fs.writeFileSync(targetPath, strippedLines);
         console.log(`Created .env.${envName} with keys only`);
+        break;
+    }
+
+    // delete an environment file
+    case 'delete': {
+        const targetFile = args[1] || '.env';
+        const targetPath = path.join(process.cwd(), targetFile);
+
+        if (!fs.existsSync(targetPath)) {
+            console.log(`File ${targetFile} does not exist`);
+        } else {
+            fs.unlinkSync(targetPath);
+            console.log(`Deleted ${targetFile}`);
+        }
+
         break;
     }
 
