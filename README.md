@@ -50,9 +50,9 @@ env-creator create
 
 ## Usage (examples for `pnpm`)
 
-`env-creator` (also available as `env`) provides several commands to help you quickly set up or split your environment files.
+`env-creator` (also available as `env`) provides several commands (along with their short aliases, e.g. `c` for `create`) to help you quickly set up or split your environment files.
 
-### 1. Create an empty or pre-filled `.env` file
+### 1. Create an empty or pre-filled `.env` file (alias: `c`)
 
 Generates a `.env` file in the current working directory. You can optionally pass `KEY=VALUE` pairs to pre-fill it. If a file already exists, it will not overwrite it.
 
@@ -63,6 +63,8 @@ pnpx env-creator create
 **With initial fields:**
 ```bash
 pnpx env-creator create PORT=3000 NODE_ENV=development
+# or short version
+pnpx env c PORT=3000 NODE_ENV=development
 ```
 
 **Resulting `.env`:**
@@ -71,7 +73,7 @@ PORT=3000
 NODE_ENV=development
 ```
 
-### 2. Create from JSON
+### 2. Create from JSON (alias: `cfj`)
 
 Generates a `.env` target file from a provided JSON file. The keys and values in the JSON file will be converted into `KEY=VALUE` format.
 You can optionally provide an `--env <name>` flag to create a specific `.env.<name>` file (e.g., `.env.production`).
@@ -101,7 +103,7 @@ DB_HOST=localhost
 NODE_ENV=development
 ```
 
-### 3. Split `.env` for specific environments
+### 3. Split `.env` for specific environments (alias: `s`)
 
 Reads your existing `.env` file, removes all comments and values, and creates a new target file containing **only the keys** (e.g., for creating a `.env.example` or `.env.production` template).
 
@@ -128,7 +130,7 @@ DB_USER=
 DB_PASS=
 ```
 
-### 4. Delete an `.env` file
+### 4. Delete an `.env` file (alias: `d`)
 
 Deletes a specific environment file. If no filename is provided, it defaults to deleting `.env`.
 
@@ -138,11 +140,11 @@ pnpx env-creator delete [file]
 
 **Examples:**
 ```bash
-pnpx env-creator delete					# Deletes .env
-pnpx env-creator delete .env.production	# Deletes .env.production
+pnpx env-creator delete				# Deletes .env
+pnpx env-creator delete .env.production		# Deletes .env.production
 ```
 
-### 5. Sort `.env` keys alphabetically
+### 5. Sort `.env` keys alphabetically (alias: `srt`)
 
 Reads an environment file and reorders all `KEY=VALUE` lines alphabetically. Comments and empty lines are preserved at the top of the file. Defaults to `.env` if no file is specified.
 

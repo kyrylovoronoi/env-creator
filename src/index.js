@@ -11,12 +11,13 @@ if (args.length === 0) {
 
 function showHelp() {
     console.log("Usage: env-creator <command> [options]");
+    console.log("   or: env <command> [options]");
     console.log("Commands:");
-    console.log("  create [KEY=value...]   Create a .env file (optionally with values)");
-    console.log("  create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
-    console.log("  split --env <dev|prod>  Create environment-specific file from .env");
-    console.log("  delete [file]           Delete an environment file (default: .env)");
-    console.log("  sort [file]             Sort keys alphabetically in an env file (default: .env)");
+    console.log("  c, create [KEY=value...]   Create a .env file (optionally with values)");
+    console.log("  cfj, create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
+    console.log("  s, split --env <dev|prod>  Create environment-specific file from .env");
+    console.log("  d, delete [file]           Delete an environment file (default: .env)");
+    console.log("  srt, sort [file]           Sort keys alphabetically in an env file (default: .env)");
     console.log("Options:");
     console.log("  -h, --help              Show this help message");
 }
@@ -30,6 +31,7 @@ if (command === '--help' || command === '-h' || command === 'help') {
 
 switch (command) {
     // create an empty .env
+    case 'c':
     case 'create': {
         const envPath = path.join(process.cwd(), '.env');
 
@@ -57,6 +59,7 @@ switch (command) {
     }
 
     // create a .env from JSON
+    case 'cfj':
     case 'create-from-json': {
         const jsonFile = args[1];
 
@@ -92,6 +95,7 @@ switch (command) {
     }
 
     // create .env.[name] with empty values
+    case 's':
     case 'split': {
         const envArgIndex = args.indexOf('--env');
 
@@ -126,6 +130,7 @@ switch (command) {
     }
 
     // delete an environment file
+    case 'd':
     case 'delete': {
         const targetFile = args[1] || '.env';
         const targetPath = path.join(process.cwd(), targetFile);
@@ -141,6 +146,7 @@ switch (command) {
     }
 
     // sort keys in an env file alphabetically
+    case 'srt':
     case 'sort': {
         const targetFile = args[1] || '.env';
         const targetPath = path.join(process.cwd(), targetFile);
