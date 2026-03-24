@@ -174,6 +174,68 @@ DB_HOST=localhost
 PORT=3000
 ```
 
+### 6. Generate environment constants (alias: `gc`)
+
+Reads an environment file (defaults to `.env`), extracts the keys, and creates a JavaScript file exporting each key inside a constant object (defaults to `envConstants.js`). You can specify a custom output file using the `--out` flag.
+
+```bash
+pnpx env-creator generate-constants [file] [--out <filename>]
+```
+
+**Examples:**
+```bash
+pnpx env gc					# Generates envConstants.js from .env by default
+pnpx env gc .env.production			# Generates envConstants.js from .env.production
+pnpx env gc --out myConfig.js			# Generates myConfig.js from .env
+pnpx env gc .env.production --out config/env.js # Generates config/env.js from .env.production
+```
+
+**Resulting `envConstants.js`:**
+```javascript
+export const ENV = {
+	API_URL: process.env.API_URL,
+	JWT_SECRET: process.env.JWT_SECRET,
+};
+```
+
+> [!IMPORTANT]
+> There is no `process` object in the browser. To use these constants on the client-side, you must inject the environment variables using your bundler.
+>
+> **Example for Webpack** (other bundlers like Vite or Rollup will require their own specific configuration):
+>
+> ```javascript
+> import webpack from "webpack";
+> import dotenv from "dotenv";
+> import path from "path"; // if needed
+>
+> // load environment variables from .env
+> const env = dotenv.config().parsed;
+> // load environment variables from a specific .env file (for example, .env.production)
+> // const env = dotenv.config({ path: path.resolve(__dirname, `../.env.${envName}`) }).parsed;
+>
+> // convert to an object for DefinePlugin
+> const envKeys = Object.keys(env).reduce((acc, key) => {
+>   acc[`process.env.${key}`] = JSON.stringify(env[key]);
+>   return acc;
+> }, {});
+>
+> // inject variables passing them into DefinePlugin
+> export default {
+>   // ...
+>   plugins: [
+>     new webpack.DefinePlugin({ ...envKeys }),
+>   ],
+> };
+> ```
+
+Now you can easily import these constants anywhere in your project:
+
+```javascript
+import { ENV } from "[pathToFile]/envConstants";
+
+console.log(`API URL: ${ENV.API_URL}`); // delete after checking
+```
+
 ## Development
 
 If you want to contribute or modify the tool, you can clone the repository and use the built-in npm scripts:
