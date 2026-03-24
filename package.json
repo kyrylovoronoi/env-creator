@@ -19,6 +19,7 @@
   "scripts": {
     "lint": "eslint .",
     "build": "esbuild src/index.js --bundle --platform=node --format=esm --target=node20 --minify --outfile=dist/index.js && printf '#!/usr/bin/env node\nimport(\"./index.js\");\n' > dist/cli.js && chmod +x dist/cli.js",
+    "build:pack": "pnpm run build && pnpm pack",
     "prepublishOnly": "pnpm run lint && pnpm run build",
     "release": "pnpm version patch && pnpm publish"
   },
