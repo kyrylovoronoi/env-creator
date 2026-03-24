@@ -1,6 +1,6 @@
 {
   "name": "env-creator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A fast, lightweight CLI tool for managing and generating custom environment (`.env`) files",
   "type": "module",
   "bin": {

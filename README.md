@@ -64,7 +64,7 @@ pnpx env-creator create
 ```bash
 pnpx env-creator create PORT=3000 NODE_ENV=development
 # or short version
-pnpx env c PORT=3000 NODE_ENV=development
+pnpm exec env c PORT=3000 NODE_ENV=development
 ```
 
 **Resulting `.env`:**
@@ -184,10 +184,10 @@ pnpx env-creator generate-constants [file] [--out <filename>]
 
 **Examples:**
 ```bash
-pnpx env gc					# Generates envConstants.js from .env by default
-pnpx env gc .env.production			# Generates envConstants.js from .env.production
-pnpx env gc --out myConfig.js			# Generates myConfig.js from .env
-pnpx env gc .env.production --out config/env.js # Generates config/env.js from .env.production
+pnpm exec env gc					# Generates envConstants.js from .env by default
+pnpm exec env gc .env.production			# Generates envConstants.js from .env.production
+pnpm exec env gc --out myConfig.js			# Generates myConfig.js from .env
+pnpm exec env gc .env.production --out config/env.js	# Generates config/env.js from .env.production
 ```
 
 **Resulting `envConstants.js`:**
