@@ -1,11 +1,11 @@
 {
   "name": "env-creator",
   "version": "1.0.0",
-  "description": "Environment variable generator CLI",
+  "description": "A fast, lightweight CLI tool for managing and generating custom environment (`.env`) files",
   "type": "module",
   "bin": {
     "env-creator": "./dist/cli.js",
-    "create-env": "./dist/cli.js"
+    "env": "./dist/cli.js"
   },
   "exports": {
     ".": "./dist/index.js"
@@ -24,9 +24,13 @@
   },
   "keywords": [
     "env",
+    ".env",
     "dotenv",
-    "cli",
     "environment",
+    "variables",
+    "node",
+    "custom",
+    "cli",
     "generator"
   ],
   "author": "Kyrylo Voronoi",
