@@ -146,31 +146,59 @@ pnpx env-creator delete .env.production		# Deletes .env.production
 
 ### 5. Sort `.env` keys alphabetically (alias: `srt`)
 
-Reads an environment file and reorders all `KEY=VALUE` lines alphabetically. Comments and empty lines are preserved at the top of the file. Defaults to `.env` if no file is specified.
+Reads an environment file and reorders all `KEY=VALUE` lines alphabetically. By default, it operates in a **flat sort mode**, meaning it binds each comment or empty line to the closest variable immediately below it, and sorts these blocks of keys.
+
+If you prefer to strictly preserve the exact file layout and structure, use the `--groups` (or `-g`) flag, which performs **intra-group sorting** that alphabetizes variables tightly inside their original continuous groups. Defaults to `.env` if no file is specified.
 
 ```bash
-pnpx env-creator sort [file]
+pnpx env-creator sort [--groups] [file]
 ```
 
 **Examples:**
 ```bash
-pnpx env-creator sort               	# Sorts .env
-pnpx env-creator sort .env.production	# Sorts .env.production
+pnpx env-creator sort               		# Flat sorts .env
+pnpx env-creator sort -g .env.production	# Group-sorts .env.production
 ```
+
+**Example 1: Flat Sort (Default)**
 
 **Before:**
 ```env
-# App config
+DB_USER=admin
+DB_PASS=secret
 PORT=3000
 APP_NAME=my-app
-DB_HOST=localhost
 ```
 
-**After:**
+**After (`env-creator sort`):**
 ```env
-# App config
 APP_NAME=my-app
-DB_HOST=localhost
+DB_PASS=secret
+DB_USER=admin
+PORT=3000
+```
+
+**Example 2: Intra-Group Sort (`--groups`)**
+
+**Before:**
+```env
+# DB Config
+DB_USER=admin
+DB_PASS=secret
+
+# App
+PORT=3000
+APP_NAME=my-app
+```
+
+**After (`env-creator sort -g`):**
+```env
+# DB Config
+DB_PASS=secret
+DB_USER=admin
+
+# App
+APP_NAME=my-app
 PORT=3000
 ```
 

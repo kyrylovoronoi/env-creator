@@ -18,7 +18,7 @@ function showHelp() {
     console.log("  cfj, create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
     console.log("  s, split --env <dev|prod>  Create environment-specific file from .env");
     console.log("  d, delete [file]           Delete an environment file (default: .env)");
-    console.log("  srt, sort [file]           Sort keys alphabetically in an env file (default: .env)");
+    console.log("  srt, sort [-g/--groups] [file] Sort keys alphabetically (default: .env). Use -g to sort inside existing groups.");
     console.log("  gc, generate-constants [file] [--out <file>] Generate a JS file with env variable constants");
     console.log("Options:");
     console.log("  -h, --help              Show this help message");
@@ -150,7 +150,9 @@ switch (command) {
     // sort keys in an env file alphabetically
     case 'srt':
     case 'sort': {
-        const targetFile = args[1] || '.env';
+        const hasGroups = args.includes('--groups') || args.includes('-g');
+        const fileArg = args.slice(1).find(arg => arg !== '--groups' && arg !== '-g');
+        const targetFile = fileArg || '.env';
         const targetPath = path.join(process.cwd(), targetFile);
 
         if (!fs.existsSync(targetPath)) {
@@ -159,25 +161,77 @@ switch (command) {
         }
 
         const rawLines = fs.readFileSync(targetPath, 'utf-8').split(/\r?\n/);
-
-        // strip trailing empty line if file ends with a newline
         const lines = rawLines[rawLines.length - 1] === '' ? rawLines.slice(0, -1) : rawLines;
+        const sortedLines = [];
 
-        const entries = lines
-            .filter(line => !line.startsWith('#') && line.trim() !== '' && line.includes('='))
-            .sort((a, b) => a.localeCompare(b));
+        if (hasGroups) {
+            let currentVars = [];
 
-        let entryIdx = 0;
+			for (const line of lines) {
+                const isVar = !line.startsWith('#') && line.trim() !== '' && line.includes('=');
 
-        const sorted = lines.map(line => {
-            if (!line.startsWith('#') && line.trim() !== '' && line.includes('=')) {
-                return entries[entryIdx++];
+				if (isVar) {
+                    currentVars.push(line);
+                } else {
+                    if (currentVars.length > 0) {
+                        currentVars.sort((a, b) => a.split('=')[0].trim().localeCompare(b.split('=')[0].trim()));
+                        sortedLines.push(...currentVars);
+                        currentVars = [];
+
+                        // Ensure an empty line separates the group from the next comment
+                        if (line.trim() !== '') {
+                            sortedLines.push('');
+                        }
+                    }
+
+                    // Prevent consecutive empty lines
+                    if (line.trim() === '' && sortedLines.length > 0 && sortedLines[sortedLines.length - 1].trim() === '') {
+                        continue;
+                    }
+
+					sortedLines.push(line);
+                }
             }
 
-            return line;
-        });
+			if (currentVars.length > 0) {
+                currentVars.sort((a, b) => a.split('=')[0].trim().localeCompare(b.split('=')[0].trim()));
+                sortedLines.push(...currentVars);
+            }
 
-        fs.writeFileSync(targetPath, sorted.join('\n') + '\n');
+            // Remove trailing empty lines
+            while (sortedLines.length > 0 && sortedLines[sortedLines.length - 1].trim() === '') {
+                sortedLines.pop();
+            }
+        } else {
+            const blocks = [];
+            let currentHeader = [];
+
+			for (const line of lines) {
+                const isVar = !line.startsWith('#') && line.trim() !== '' && line.includes('=');
+
+                if (isVar) {
+                    blocks.push({
+                        header: currentHeader,
+                        entry: line,
+                        key: line.split('=')[0].trim()
+                    });
+                    currentHeader = [];
+                } else if (line.trim() !== '') {
+                    currentHeader.push(line);
+                }
+            }
+
+			blocks.sort((a, b) => a.key.localeCompare(b.key));
+
+			for (const block of blocks) {
+                sortedLines.push(...block.header);
+                sortedLines.push(block.entry);
+            }
+
+			sortedLines.push(...currentHeader);
+        }
+
+        fs.writeFileSync(targetPath, sortedLines.join('\n') + '\n');
         console.log(`Sorted keys in ${targetFile}`);
         break;
     }
