@@ -1,6 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
+import util from 'util';
+
+const COLORS = {
+    SUCCESS: 'green',
+    WARN: 'yellow',
+    ERROR: 'red'
+};
+
+function colorText(color, text) {
+    return typeof util.styleText === 'function' ? util.styleText(color, text) : text;
+}
 
 // get CLI arguments
 const args = process.argv.slice(2);
@@ -38,7 +49,7 @@ switch (command) {
         const envPath = path.join(process.cwd(), '.env');
 
         if (fs.existsSync(envPath)) {
-            console.log('.env already exists');
+            console.log(colorText(COLORS.WARN, '.env already exists'));
         } else {
             const fieldsArgs = args.slice(1);
             let envContent = '';
@@ -51,9 +62,9 @@ switch (command) {
             fs.writeFileSync(envPath, envContent);
 
             if (envContent) {
-                console.log('Created .env with specified fields');
+                console.log(colorText(COLORS.SUCCESS, 'Created .env with specified fields'));
             } else {
-                console.log('Created empty .env');
+                console.log(colorText(COLORS.SUCCESS, 'Created empty .env'));
             }
         }
 
@@ -66,12 +77,12 @@ switch (command) {
         const jsonFile = args[1];
 
         if (!jsonFile) {
-            console.error('Please provide a JSON file');
+            console.error(colorText(COLORS.ERROR, 'Please provide a JSON file'));
             process.exit(1);
         }
 
         if (!fs.existsSync(jsonFile)) {
-            console.error('JSON file not found');
+            console.error(colorText(COLORS.ERROR, 'JSON file not found'));
             process.exit(1);
         }
 
@@ -80,7 +91,7 @@ switch (command) {
         const targetEnvFile = `.env${envSuffix}`;
 
         if (fs.existsSync(targetEnvFile)) {
-            console.log(`${targetEnvFile} already exists`);
+            console.log(colorText(COLORS.WARN, `${targetEnvFile} already exists`));
             break;
         }
 
@@ -92,7 +103,7 @@ switch (command) {
         }
 
         fs.writeFileSync(targetEnvFile, envContent);
-        console.log(`Created ${targetEnvFile} from JSON`);
+        console.log(colorText(COLORS.SUCCESS, `Created ${targetEnvFile} from JSON`));
         break;
     }
 
@@ -102,7 +113,7 @@ switch (command) {
         const envArgIndex = args.indexOf('--env');
 
         if (envArgIndex === -1 || !args[envArgIndex + 1]) {
-            console.error('Please specify environment with --env <dev|prod>');
+            console.error(colorText(COLORS.ERROR, 'Please specify environment with --env <dev|prod>'));
             process.exit(1);
         }
 
@@ -110,7 +121,7 @@ switch (command) {
         const sourcePath = path.join(process.cwd(), '.env');
 
         if (!fs.existsSync(sourcePath)) {
-            console.error('.env file not found');
+            console.error(colorText(COLORS.ERROR, '.env file not found'));
             process.exit(1);
         }
 
@@ -122,12 +133,12 @@ switch (command) {
         const targetPath = path.join(process.cwd(), `.env.${envName}`);
 
         if (fs.existsSync(targetPath)) {
-            console.log(`.env.${envName} already exists`);
+            console.log(colorText(COLORS.WARN, `.env.${envName} already exists`));
             break;
         }
 
         fs.writeFileSync(targetPath, strippedLines);
-        console.log(`Created .env.${envName} with keys only`);
+        console.log(colorText(COLORS.SUCCESS, `Created .env.${envName} with keys only`));
         break;
     }
 
@@ -138,10 +149,10 @@ switch (command) {
         const targetPath = path.join(process.cwd(), targetFile);
 
         if (!fs.existsSync(targetPath)) {
-            console.log(`File ${targetFile} does not exist`);
+            console.log(colorText(COLORS.WARN, `File ${targetFile} does not exist`));
         } else {
             fs.unlinkSync(targetPath);
-            console.log(`Deleted ${targetFile}`);
+            console.log(colorText(COLORS.SUCCESS, `Deleted ${targetFile}`));
         }
 
         break;
@@ -156,7 +167,7 @@ switch (command) {
         const targetPath = path.join(process.cwd(), targetFile);
 
         if (!fs.existsSync(targetPath)) {
-            console.error(`File ${targetFile} does not exist`);
+            console.error(colorText(COLORS.ERROR, `File ${targetFile} does not exist`));
             process.exit(1);
         }
 
@@ -232,7 +243,7 @@ switch (command) {
         }
 
         fs.writeFileSync(targetPath, sortedLines.join('\n') + '\n');
-        console.log(`Sorted keys in ${targetFile}`);
+        console.log(colorText(COLORS.SUCCESS, `Sorted keys in ${targetFile}`));
         break;
     }
 
@@ -253,9 +264,9 @@ switch (command) {
             if (envFiles.length > 0) {
                 targetFile = envFiles[0];
                 targetPath = path.join(process.cwd(), targetFile);
-                console.log(`File ${args[1] || '.env'} not found. Using ${targetFile} instead.`);
+                console.log(colorText(COLORS.WARN, `File ${args[1] || '.env'} not found. Using ${targetFile} instead.`));
             } else {
-                console.error(`File ${targetFile} does not exist and no fallback .env* files were found`);
+                console.error(colorText(COLORS.ERROR, `File ${targetFile} does not exist and no fallback .env* files were found`));
                 process.exit(1);
             }
         }
@@ -266,7 +277,7 @@ switch (command) {
             .map(line => line.split('=')[0].trim());
 
         if (entries.length === 0) {
-            console.log(`No variables found in ${targetFile}`);
+            console.log(colorText(COLORS.WARN, `No variables found in ${targetFile}`));
             break;
         }
 
@@ -285,23 +296,23 @@ switch (command) {
 
 				if (ans === 'y' || ans === 'yes') {
                     fs.writeFileSync(outputPath, constantsContent);
-                    console.log(`Overwrote ${outFileName} from ${targetFile}`);
+                    console.log(colorText(COLORS.SUCCESS, `Overwrote ${outFileName} from ${targetFile}`));
                 } else {
-                    console.log('Action cancelled. File was not overwritten.');
+                    console.log(colorText(COLORS.WARN, 'Action cancelled. File was not overwritten.'));
                 }
 
 				rl.close();
             });
         } else {
             fs.writeFileSync(outputPath, constantsContent);
-            console.log(`Generated ${outFileName} from ${targetFile}`);
+            console.log(colorText(COLORS.SUCCESS, `Generated ${outFileName} from ${targetFile}`));
         }
 
 		break;
     }
 
     default:
-        console.error(`Unknown command: "${command}"\n`);
+        console.error(colorText(COLORS.ERROR, `Unknown command: "${command}"\n`));
         showHelp();
         process.exit(1);
 }
