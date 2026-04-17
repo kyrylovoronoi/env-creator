@@ -52,6 +52,14 @@ env-creator create
 
 `env-creator` (also available as `env`) provides several commands (along with their short aliases, e.g. `c` for `create`) to help you quickly set up or split your environment files.
 
+**Commands:**
+- [1. Create an empty or pre-filled `.env` file](#1-create-an-empty-or-pre-filled-env-file-alias-c)
+- [2. Create from JSON](#2-create-from-json-alias-cfj)
+- [3. Split `.env` for specific environments](#3-split-env-for-specific-environments-alias-s)
+- [4. Delete an `.env` file](#4-delete-an-env-file-alias-d)
+- [5. Sort `.env` keys alphabetically](#5-sort-env-keys-alphabetically-alias-srt)
+- [6. Generate environment constants](#6-generate-environment-constants-alias-gc)
+
 ### 1. Create an empty or pre-filled `.env` file (alias: `c`)
 
 Generates a `.env` file in the current working directory. You can optionally pass `KEY=VALUE` pairs to pre-fill it. If a file already exists, it will not overwrite it.
