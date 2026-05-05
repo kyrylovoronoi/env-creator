@@ -56,8 +56,8 @@ env-creator create
 - [1. Create an empty or pre-filled `.env` file](#1-create-an-empty-or-pre-filled-env-file-alias-c)
 - [2. Create from JSON](#2-create-from-json-alias-cfj)
 - [3. Split `.env` for specific environments](#3-split-env-for-specific-environments-alias-s)
-- [4. Delete an `.env` file](#4-delete-an-env-file-alias-d)
-- [5. Sort `.env` keys alphabetically](#5-sort-env-keys-alphabetically-alias-srt)
+- [4. Sort `.env` keys alphabetically](#4-sort-env-keys-alphabetically-alias-srt)
+- [5. Delete an `.env` file](#5-delete-an-env-file-alias-d)
 - [6. Generate environment constants](#6-generate-environment-constants-alias-gc)
 
 ### 1. Create an empty or pre-filled `.env` file (alias: `c`)
@@ -138,21 +138,7 @@ DB_USER=
 DB_PASS=
 ```
 
-### 4. Delete an `.env` file (alias: `d`)
-
-Deletes a specific environment file. If no filename is provided, it defaults to deleting `.env`.
-
-```bash
-pnpx env-creator delete [file]
-```
-
-**Examples:**
-```bash
-pnpx env-creator delete				# Deletes .env
-pnpx env-creator delete .env.production		# Deletes .env.production
-```
-
-### 5. Sort `.env` keys alphabetically (alias: `srt`)
+### 4. Sort `.env` keys alphabetically (alias: `srt`)
 
 Reads an environment file and reorders all `KEY=VALUE` lines alphabetically. By default, it operates in a **flat sort mode**, meaning it binds each comment or empty line to the closest variable immediately below it, and sorts these blocks of keys.
 
@@ -208,6 +194,20 @@ DB_USER=admin
 # App
 APP_NAME=my-app
 PORT=3000
+```
+
+### 5. Delete an `.env` file (alias: `d`)
+
+Deletes a specific environment file. If no filename is provided, it defaults to deleting `.env`.
+
+```bash
+pnpx env-creator delete [file]
+```
+
+**Examples:**
+```bash
+pnpx env-creator delete				# Deletes .env
+pnpx env-creator delete .env.production		# Deletes .env.production
 ```
 
 ### 6. Generate environment constants (alias: `gc`)

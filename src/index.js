@@ -28,8 +28,8 @@ function showHelp() {
     console.log("  c, create [KEY=value...]   Create a .env file (optionally with values)");
     console.log("  cfj, create-from-json <json> [--env <name>] Create .env or .env.<name> from JSON");
     console.log("  s, split --env <dev|prod>  Create environment-specific file from .env");
-    console.log("  d, delete [file]           Delete an environment file (default: .env)");
     console.log("  srt, sort [-g/--groups] [file] Sort keys alphabetically (default: .env). Use -g to sort inside existing groups.");
+    console.log("  d, delete [file]           Delete an environment file (default: .env)");
     console.log("  gc, generate-constants [file] [--out <file>] Generate a JS file with env variable constants");
     console.log("Options:");
     console.log("  -h, --help              Show this help message");
@@ -142,22 +142,6 @@ switch (command) {
         break;
     }
 
-    // delete an environment file
-    case 'd':
-    case 'delete': {
-        const targetFile = args[1] || '.env';
-        const targetPath = path.join(process.cwd(), targetFile);
-
-        if (!fs.existsSync(targetPath)) {
-            console.log(colorText(COLORS.WARN, `File ${targetFile} does not exist`));
-        } else {
-            fs.unlinkSync(targetPath);
-            console.log(colorText(COLORS.SUCCESS, `Deleted ${targetFile}`));
-        }
-
-        break;
-    }
-
     // sort keys in an env file alphabetically
     case 'srt':
     case 'sort': {
@@ -246,6 +230,23 @@ switch (command) {
         console.log(colorText(COLORS.SUCCESS, `Sorted keys in ${targetFile}`));
         break;
     }
+
+    // delete an environment file
+    case 'd':
+    case 'delete': {
+        const targetFile = args[1] || '.env';
+        const targetPath = path.join(process.cwd(), targetFile);
+
+        if (!fs.existsSync(targetPath)) {
+            console.log(colorText(COLORS.WARN, `File ${targetFile} does not exist`));
+        } else {
+            fs.unlinkSync(targetPath);
+            console.log(colorText(COLORS.SUCCESS, `Deleted ${targetFile}`));
+        }
+
+        break;
+    }
+
 
     // generate a js file with env constants
     case 'gc':
