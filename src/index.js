@@ -1,18 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
-import util from 'util';
-import { showHelp } from './help.js';
+import { showHelp, colorText } from './help.js';
 
 const COLORS = {
     SUCCESS: 'green',
     WARN: 'yellow',
     ERROR: 'red'
 };
-
-function colorText(color, text) {
-    return typeof util.styleText === 'function' ? util.styleText(color, text) : text;
-}
 
 // get CLI arguments
 const args = process.argv.slice(2);
@@ -21,7 +16,6 @@ if (args.length === 0) {
     showHelp();
     process.exit(0);
 }
-
 
 const command = args[0];
 
@@ -150,10 +144,10 @@ switch (command) {
         if (hasGroups) {
             let currentVars = [];
 
-			for (const line of lines) {
+            for (const line of lines) {
                 const isVar = !line.startsWith('#') && line.trim() !== '' && line.includes('=');
 
-				if (isVar) {
+                if (isVar) {
                     currentVars.push(line);
                 } else {
                     if (currentVars.length > 0) {
@@ -172,11 +166,11 @@ switch (command) {
                         continue;
                     }
 
-					sortedLines.push(line);
+                    sortedLines.push(line);
                 }
             }
 
-			if (currentVars.length > 0) {
+            if (currentVars.length > 0) {
                 currentVars.sort((a, b) => a.split('=')[0].trim().localeCompare(b.split('=')[0].trim()));
                 sortedLines.push(...currentVars);
             }
@@ -189,7 +183,7 @@ switch (command) {
             const blocks = [];
             let currentHeader = [];
 
-			for (const line of lines) {
+            for (const line of lines) {
                 const isVar = !line.startsWith('#') && line.trim() !== '' && line.includes('=');
 
                 if (isVar) {
@@ -204,14 +198,14 @@ switch (command) {
                 }
             }
 
-			blocks.sort((a, b) => a.key.localeCompare(b.key));
+            blocks.sort((a, b) => a.key.localeCompare(b.key));
 
-			for (const block of blocks) {
+            for (const block of blocks) {
                 sortedLines.push(...block.header);
                 sortedLines.push(block.entry);
             }
 
-			sortedLines.push(...currentHeader);
+            sortedLines.push(...currentHeader);
         }
 
         fs.writeFileSync(targetPath, sortedLines.join('\n') + '\n');
@@ -283,21 +277,21 @@ switch (command) {
             rl.question(`File ${outFileName} already exists. Overwrite? (y/n) `, (answer) => {
                 const ans = answer.trim().toLowerCase();
 
-				if (ans === 'y' || ans === 'yes') {
+                if (ans === 'y' || ans === 'yes') {
                     fs.writeFileSync(outputPath, constantsContent);
                     console.log(colorText(COLORS.SUCCESS, `Overwrote ${outFileName} from ${targetFile}`));
                 } else {
                     console.log(colorText(COLORS.WARN, 'Action cancelled. File was not overwritten.'));
                 }
 
-				rl.close();
+                rl.close();
             });
         } else {
             fs.writeFileSync(outputPath, constantsContent);
             console.log(colorText(COLORS.SUCCESS, `Generated ${outFileName} from ${targetFile}`));
         }
 
-		break;
+        break;
     }
 
     default:

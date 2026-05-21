@@ -1,3 +1,9 @@
+import util from 'util';
+
+export function colorText(color, text) {
+    return typeof util.styleText === 'function' ? util.styleText(color, text) : text;
+}
+
 export function showHelp() {
     console.log("Usage: env-creator <command> [options]");
     console.log("   or: env <command> [options]");
