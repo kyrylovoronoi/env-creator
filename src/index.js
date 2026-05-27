@@ -2,12 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
 import { showHelp, colorText } from './help.js';
-
-const COLORS = {
-    SUCCESS: 'green',
-    WARN: 'yellow',
-    ERROR: 'red'
-};
+import { COLORS } from './constants.js';
 
 // get CLI arguments
 const args = process.argv.slice(2);
