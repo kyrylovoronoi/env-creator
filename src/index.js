@@ -3,6 +3,7 @@ import path from 'path';
 import readline from 'readline';
 import { showHelp, colorText } from './help.js';
 import { COLORS } from './constants.js';
+import { create } from './commands/create.js';
 
 // get CLI arguments
 const args = process.argv.slice(2);
@@ -23,28 +24,7 @@ switch (command) {
     // create an empty .env
     case 'c':
     case 'create': {
-        const envPath = path.join(process.cwd(), '.env');
-
-        if (fs.existsSync(envPath)) {
-            console.log(colorText(COLORS.WARN, '.env already exists'));
-        } else {
-            const fieldsArgs = args.slice(1);
-            let envContent = '';
-
-            if (fieldsArgs.length > 0) {
-                const validFields = fieldsArgs.filter(arg => arg.includes('='));
-                envContent = validFields.join('\n') + (validFields.length > 0 ? '\n' : '');
-            }
-
-            fs.writeFileSync(envPath, envContent);
-
-            if (envContent) {
-                console.log(colorText(COLORS.SUCCESS, 'Created .env with specified fields'));
-            } else {
-                console.log(colorText(COLORS.SUCCESS, 'Created empty .env'));
-            }
-        }
-
+        create(args);
         break;
     }
 
