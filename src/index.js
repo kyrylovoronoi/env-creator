@@ -7,6 +7,7 @@ import { create } from './commands/create.js';
 import { createFromJson } from './commands/create-from-json.js';
 import { split } from './commands/split.js';
 import { sort } from './commands/sort.js';
+import { delete as deleteCmd } from './commands/delete.js';
 
 // get CLI arguments
 const args = process.argv.slice(2);
@@ -55,16 +56,7 @@ switch (command) {
     // delete an environment file
     case 'd':
     case 'delete': {
-        const targetFile = args[1] || '.env';
-        const targetPath = path.join(process.cwd(), targetFile);
-
-        if (!fs.existsSync(targetPath)) {
-            console.log(colorText(COLORS.WARN, `File ${targetFile} does not exist`));
-        } else {
-            fs.unlinkSync(targetPath);
-            console.log(colorText(COLORS.SUCCESS, `Deleted ${targetFile}`));
-        }
-
+        deleteCmd(args);
         break;
     }
 
