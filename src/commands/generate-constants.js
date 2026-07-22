@@ -28,7 +28,7 @@ export function generateConstants(args) {
 
     const rawLines = fs.readFileSync(targetPath, 'utf-8').split(/\r?\n/);
     const entries = rawLines
-        .filter(line => !line.startsWith('#') && line.trim() !== '' && line.includes('='))
+        .filter(line => !line.trim().startsWith('#') && line.trim() !== '' && line.includes('='))
         .map(line => line.split('=')[0].trim());
 
     if (entries.length === 0) {
@@ -36,7 +36,7 @@ export function generateConstants(args) {
         return;
     }
 
-    const envFields = entries.map(key => `\t${key}: process.env.${key},`).join('\n');
+    const envFields = entries.map(key => `\t${JSON.stringify(key)}: process.env[${JSON.stringify(key)}],`).join('\n');
     const constantsContent = `export const ENV = {\n${envFields}\n};\n`;
     const outputPath = path.join(process.cwd(), outFileName);
 
