@@ -21,7 +21,7 @@ export function split(args) {
 
     const lines = fs.readFileSync(sourcePath, 'utf-8').split(/\r?\n/);
     const strippedLines = lines
-        .filter(line => line.trim() !== '' && !line.startsWith('#'))
+        .filter(line => line.trim() !== '' && !line.trim().startsWith('#') && line.includes('='))
         .map(line => line.split('=')[0] + '=')
         .join('\n');
     const targetPath = path.join(process.cwd(), `.env.${envName}`);

@@ -22,7 +22,7 @@ export function sort(args) {
         let currentVars = [];
 
         for (const line of lines) {
-            const isVar = !line.startsWith('#') && line.trim() !== '' && line.includes('=');
+            const isVar = !line.trim().startsWith('#') && line.trim() !== '' && line.includes('=');
 
             if (isVar) {
                 currentVars.push(line);
@@ -61,7 +61,7 @@ export function sort(args) {
         let currentHeader = [];
 
         for (const line of lines) {
-            const isVar = !line.startsWith('#') && line.trim() !== '' && line.includes('=');
+            const isVar = !line.trim().startsWith('#') && line.trim() !== '' && line.includes('=');
 
             if (isVar) {
                 blocks.push({
