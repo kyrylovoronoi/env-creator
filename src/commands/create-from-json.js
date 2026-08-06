@@ -1,9 +1,14 @@
 import fs from 'fs';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
+import { parseCommandArgs } from '../utils/cli-parser.js';
 
 export function createFromJson(args) {
-    const jsonFile = args[1];
+    const { values, positionals } = parseCommandArgs(args, {
+        env: { type: 'string', short: 'e' }
+    });
+
+    const jsonFile = positionals[0];
 
     if (!jsonFile) {
         console.error(colorText(COLORS.ERROR, 'Please provide a JSON file'));
@@ -15,8 +20,7 @@ export function createFromJson(args) {
         process.exit(1);
     }
 
-    const envArgIndex = args.indexOf('--env');
-    const envSuffix = (envArgIndex !== -1 && args[envArgIndex + 1]) ? `.${args[envArgIndex + 1]}` : '';
+    const envSuffix = values.env ? `.${values.env}` : '';
     const targetEnvFile = `.env${envSuffix}`;
 
     if (fs.existsSync(targetEnvFile)) {

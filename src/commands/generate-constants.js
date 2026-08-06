@@ -3,13 +3,15 @@ import path from 'path';
 import readline from 'readline';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
+import { parseCommandArgs } from '../utils/cli-parser.js';
 
 export function generateConstants(args) {
-    const outArgIndex = args.indexOf('--out');
-    const outFileName = (outArgIndex !== -1 && args[outArgIndex + 1]) ? args[outArgIndex + 1] : 'envConstants.js';
-    const fileArgs = outArgIndex !== -1 ? args.filter((_, i) => i !== outArgIndex && i !== outArgIndex + 1) : args;
+    const { values, positionals } = parseCommandArgs(args, {
+        out: { type: 'string', short: 'o' }
+    });
 
-    let targetFile = fileArgs[1] || '.env';
+    const outFileName = values.out || 'envConstants.js';
+    let targetFile = positionals[0] || '.env';
     let targetPath = path.join(process.cwd(), targetFile);
 
     if (!fs.existsSync(targetPath)) {
@@ -19,7 +21,7 @@ export function generateConstants(args) {
         if (envFiles.length > 0) {
             targetFile = envFiles[0];
             targetPath = path.join(process.cwd(), targetFile);
-            console.log(colorText(COLORS.WARN, `File ${args[1] || '.env'} not found. Using ${targetFile} instead.`));
+            console.log(colorText(COLORS.WARN, `File ${positionals[0] || '.env'} not found. Using ${targetFile} instead.`));
         } else {
             console.error(colorText(COLORS.ERROR, `File ${targetFile} does not exist and no fallback .env* files were found`));
             process.exit(1);

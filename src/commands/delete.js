@@ -2,9 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
+import { parseCommandArgs } from '../utils/cli-parser.js';
 
 function deleteFn(args) {
-    const targetFile = args[1] || '.env';
+    const { positionals } = parseCommandArgs(args);
+    const targetFile = positionals[0] || '.env';
     const targetPath = path.join(process.cwd(), targetFile);
 
     if (!fs.existsSync(targetPath)) {

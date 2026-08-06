@@ -2,20 +2,25 @@ import fs from 'fs';
 import path from 'path';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
+import { parseCommandArgs } from '../utils/cli-parser.js';
 
 export function split(args) {
-    const envArgIndex = args.indexOf('--env');
+    const { values, positionals } = parseCommandArgs(args, {
+        env: { type: 'string', short: 'e' }
+    });
 
-    if (envArgIndex === -1 || !args[envArgIndex + 1]) {
+    const envName = values.env;
+
+    if (!envName) {
         console.error(colorText(COLORS.ERROR, 'Please specify environment with --env <dev|prod>'));
         process.exit(1);
     }
 
-    const envName = args[envArgIndex + 1];
-    const sourcePath = path.join(process.cwd(), '.env');
+    const sourceFile = positionals[0] || '.env';
+    const sourcePath = path.join(process.cwd(), sourceFile);
 
     if (!fs.existsSync(sourcePath)) {
-        console.error(colorText(COLORS.ERROR, '.env file not found'));
+        console.error(colorText(COLORS.ERROR, `${sourceFile} file not found`));
         process.exit(1);
     }
 

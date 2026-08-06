@@ -2,27 +2,33 @@ import fs from 'fs';
 import path from 'path';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
+import { parseCommandArgs } from '../utils/cli-parser.js';
 
 export function create(args) {
-    const envPath = path.join(process.cwd(), '.env');
+    const { values, positionals } = parseCommandArgs(args, {
+        env: { type: 'string', short: 'e' }
+    });
+
+    const envSuffix = values.env ? `.${values.env}` : '';
+    const envFileName = `.env${envSuffix}`;
+    const envPath = path.join(process.cwd(), envFileName);
 
     if (fs.existsSync(envPath)) {
-        console.log(colorText(COLORS.WARN, '.env already exists'));
+        console.log(colorText(COLORS.WARN, `${envFileName} already exists`));
     } else {
-        const fieldsArgs = args.slice(1);
         let envContent = '';
 
-        if (fieldsArgs.length > 0) {
-            const validFields = fieldsArgs.filter(arg => arg.includes('='));
+        if (positionals.length > 0) {
+            const validFields = positionals.filter(arg => arg.includes('='));
             envContent = validFields.join('\n') + (validFields.length > 0 ? '\n' : '');
         }
 
         fs.writeFileSync(envPath, envContent);
 
         if (envContent) {
-            console.log(colorText(COLORS.SUCCESS, 'Created .env with specified fields'));
+            console.log(colorText(COLORS.SUCCESS, `Created ${envFileName} with specified fields`));
         } else {
-            console.log(colorText(COLORS.SUCCESS, 'Created empty .env'));
+            console.log(colorText(COLORS.SUCCESS, `Created empty ${envFileName}`));
         }
     }
 }

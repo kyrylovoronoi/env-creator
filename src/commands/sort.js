@@ -2,11 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
+import { parseCommandArgs } from '../utils/cli-parser.js';
 
 export function sort(args) {
-    const hasGroups = args.includes('--groups') || args.includes('-g');
-    const fileArg = args.slice(1).find(arg => arg !== '--groups' && arg !== '-g');
-    const targetFile = fileArg || '.env';
+    const { values, positionals } = parseCommandArgs(args, {
+        groups: { type: 'boolean', short: 'g' }
+    });
+
+    const hasGroups = Boolean(values.groups);
+    const targetFile = positionals[0] || '.env';
     const targetPath = path.join(process.cwd(), targetFile);
 
     if (!fs.existsSync(targetPath)) {
