@@ -28,13 +28,46 @@ export function createFromJson(args) {
         return;
     }
 
-    const jsonData = JSON.parse(fs.readFileSync(jsonFile, 'utf-8'));
+    let rawData;
+
+    try {
+        rawData = fs.readFileSync(jsonFile, 'utf-8');
+    } catch (err) {
+        console.error(colorText(COLORS.ERROR, `Failed to read file "${jsonFile}": ${err.message}`));
+        process.exit(1);
+    }
+
+    let jsonData;
+
+    try {
+        jsonData = JSON.parse(rawData);
+    } catch (err) {
+        console.error(colorText(COLORS.ERROR, `Invalid JSON in "${jsonFile}": ${err.message}`));
+        process.exit(1);
+    }
+
+    if (typeof jsonData !== 'object' || jsonData === null || Array.isArray(jsonData)) {
+        console.error(colorText(COLORS.ERROR, `JSON root must be an object in "${jsonFile}"`));
+        process.exit(1);
+    }
+
     let envContent = '';
 
-    for (const key in jsonData) {
-        envContent += `${key}=${jsonData[key]}\n`;
+    for (const [key, val] of Object.entries(jsonData)) {
+        let formattedVal;
+
+        if (val === null || val === undefined) {
+            formattedVal = '';
+        } else if (typeof val === 'object') {
+            formattedVal = JSON.stringify(val);
+        } else {
+            formattedVal = String(val);
+        }
+
+        envContent += `${key}=${formattedVal}\n`;
     }
 
     fs.writeFileSync(targetEnvFile, envContent);
+
     console.log(colorText(COLORS.SUCCESS, `Created ${targetEnvFile} from JSON`));
 }
