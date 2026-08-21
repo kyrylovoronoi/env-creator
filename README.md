@@ -212,10 +212,10 @@ pnpx env-creator delete .env.production		# Deletes .env.production
 
 ### 6. Generate environment constants (alias: `gc`)
 
-Reads an environment file (defaults to `.env`), extracts the keys, and creates a JavaScript file exporting each key inside a constant object (defaults to `envConstants.js`). You can specify a custom output file using the `--out` flag.
+Reads an environment file (defaults to `.env`), extracts the keys, and creates a JavaScript file exporting each key inside a constant object (defaults to `envConstants.js`). You can specify a custom output file using the `--out` flag and bypass interactive overwrite confirmation using the `-f` / `--force` flag.
 
 ```bash
-pnpx env-creator generate-constants [file] [--out <filename>]
+pnpx env-creator generate-constants [file] [--out <filename>] [-f/--force]
 ```
 
 **Examples:**
@@ -224,6 +224,7 @@ pnpm exec env gc					# Generates envConstants.js from .env by default
 pnpm exec env gc .env.production			# Generates envConstants.js from .env.production
 pnpm exec env gc --out myConfig.js			# Generates myConfig.js from .env
 pnpm exec env gc .env.production --out config/env.js	# Generates config/env.js from .env.production
+pnpm exec env gc --force				# Overwrites existing file without prompt
 ```
 
 **Resulting `envConstants.js`:**

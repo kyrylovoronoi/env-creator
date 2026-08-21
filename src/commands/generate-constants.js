@@ -7,10 +7,12 @@ import { parseCommandArgs } from '../utils/cli-parser.js';
 
 export function generateConstants(args) {
     const { values, positionals } = parseCommandArgs(args, {
-        out: { type: 'string', short: 'o' }
+        out: { type: 'string', short: 'o' },
+        force: { type: 'boolean', short: 'f' }
     });
 
     const outFileName = values.out || 'envConstants.js';
+    const isForce = Boolean(values.force);
     let targetFile = positionals[0] || '.env';
     let targetPath = path.join(process.cwd(), targetFile);
 
@@ -42,7 +44,12 @@ export function generateConstants(args) {
     const constantsContent = `export const ENV = {\n${envFields}\n};\n`;
     const outputPath = path.join(process.cwd(), outFileName);
 
-    if (fs.existsSync(outputPath)) {
+    if (fs.existsSync(outputPath) && !isForce) {
+        if (!process.stdin.isTTY) {
+            console.error(colorText(COLORS.ERROR, `File ${outFileName} already exists. Use -f or --force to overwrite in non-interactive environments.`));
+            process.exit(1);
+        }
+
         const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
@@ -61,7 +68,14 @@ export function generateConstants(args) {
             rl.close();
         });
     } else {
+        const fileExisted = fs.existsSync(outputPath);
+
         fs.writeFileSync(outputPath, constantsContent);
-        console.log(colorText(COLORS.SUCCESS, `Generated ${outFileName} from ${targetFile}`));
+
+        if (fileExisted) {
+            console.log(colorText(COLORS.SUCCESS, `Overwrote ${outFileName} from ${targetFile}`));
+        } else {
+            console.log(colorText(COLORS.SUCCESS, `Generated ${outFileName} from ${targetFile}`));
+        }
     }
 }

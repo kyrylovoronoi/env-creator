@@ -13,7 +13,7 @@ export function showHelp() {
     console.log("  s, split --env <dev|prod>  Create environment-specific file from .env");
     console.log("  srt, sort [-g/--groups] [file] Sort keys alphabetically (default: .env). Use -g to sort inside existing groups.");
     console.log("  d, delete [file]           Delete an environment file (default: .env)");
-    console.log("  gc, generate-constants [file] [--out <file>] Generate a JS file with env variable constants");
+    console.log("  gc, generate-constants [file] [--out <file>] [-f/--force] Generate a JS file with env variable constants");
     console.log("Options:");
     console.log("  -h, --help              Show this help message");
 }
