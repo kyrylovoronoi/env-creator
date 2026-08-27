@@ -3,6 +3,7 @@ import path from 'path';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
 import { parseCommandArgs } from '../utils/cli-parser.js';
+import { parseEnvLine } from '../utils/env.js';
 
 export function create(args) {
     const { values, positionals } = parseCommandArgs(args, {
@@ -19,7 +20,7 @@ export function create(args) {
         let envContent = '';
 
         if (positionals.length > 0) {
-            const validFields = positionals.filter(arg => arg.includes('='));
+            const validFields = positionals.filter(arg => parseEnvLine(arg) !== null);
             envContent = validFields.join('\n') + (validFields.length > 0 ? '\n' : '');
         }
 
@@ -32,3 +33,4 @@ export function create(args) {
         }
     }
 }
+

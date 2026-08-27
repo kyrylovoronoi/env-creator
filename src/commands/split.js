@@ -3,6 +3,7 @@ import path from 'path';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
 import { parseCommandArgs } from '../utils/cli-parser.js';
+import { parseEnvContent } from '../utils/env.js';
 
 export function split(args) {
     const { values, positionals } = parseCommandArgs(args, {
@@ -24,10 +25,9 @@ export function split(args) {
         process.exit(1);
     }
 
-    const lines = fs.readFileSync(sourcePath, 'utf-8').split(/\r?\n/);
-    const strippedLines = lines
-        .filter(line => line.trim() !== '' && !line.trim().startsWith('#') && line.includes('='))
-        .map(line => line.split('=')[0] + '=')
+    const sourceContent = fs.readFileSync(sourcePath, 'utf-8');
+    const strippedLines = parseEnvContent(sourceContent)
+        .map(({ key }) => `${key}=`)
         .join('\n');
     const targetPath = path.join(process.cwd(), `.env.${envName}`);
 
@@ -39,3 +39,4 @@ export function split(args) {
     fs.writeFileSync(targetPath, strippedLines);
     console.log(colorText(COLORS.SUCCESS, `Created .env.${envName} with keys only`));
 }
+

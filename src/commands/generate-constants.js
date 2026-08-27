@@ -4,6 +4,7 @@ import readline from 'readline';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
 import { parseCommandArgs } from '../utils/cli-parser.js';
+import { parseEnvContent } from '../utils/env.js';
 
 export function generateConstants(args) {
     const { values, positionals } = parseCommandArgs(args, {
@@ -30,10 +31,8 @@ export function generateConstants(args) {
         }
     }
 
-    const rawLines = fs.readFileSync(targetPath, 'utf-8').split(/\r?\n/);
-    const entries = rawLines
-        .filter(line => !line.trim().startsWith('#') && line.trim() !== '' && line.includes('='))
-        .map(line => line.split('=')[0].trim());
+    const rawContent = fs.readFileSync(targetPath, 'utf-8');
+    const entries = parseEnvContent(rawContent).map(({ key }) => key);
 
     if (entries.length === 0) {
         console.log(colorText(COLORS.WARN, `No variables found in ${targetFile}`));

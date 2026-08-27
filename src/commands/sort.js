@@ -3,6 +3,7 @@ import path from 'path';
 import { colorText } from '../help.js';
 import { COLORS } from '../constants.js';
 import { parseCommandArgs } from '../utils/cli-parser.js';
+import { parseEnvLine } from '../utils/env.js';
 
 export function sort(args) {
     const { values, positionals } = parseCommandArgs(args, {
@@ -26,13 +27,13 @@ export function sort(args) {
         let currentVars = [];
 
         for (const line of lines) {
-            const isVar = !line.trim().startsWith('#') && line.trim() !== '' && line.includes('=');
+            const parsed = parseEnvLine(line);
 
-            if (isVar) {
+            if (parsed) {
                 currentVars.push(line);
             } else {
                 if (currentVars.length > 0) {
-                    currentVars.sort((a, b) => a.split('=')[0].trim().localeCompare(b.split('=')[0].trim()));
+                    currentVars.sort((a, b) => parseEnvLine(a).key.localeCompare(parseEnvLine(b).key));
                     sortedLines.push(...currentVars);
                     currentVars = [];
 
@@ -52,7 +53,7 @@ export function sort(args) {
         }
 
         if (currentVars.length > 0) {
-            currentVars.sort((a, b) => a.split('=')[0].trim().localeCompare(b.split('=')[0].trim()));
+            currentVars.sort((a, b) => parseEnvLine(a).key.localeCompare(parseEnvLine(b).key));
             sortedLines.push(...currentVars);
         }
 
@@ -65,13 +66,13 @@ export function sort(args) {
         let currentHeader = [];
 
         for (const line of lines) {
-            const isVar = !line.trim().startsWith('#') && line.trim() !== '' && line.includes('=');
+            const parsed = parseEnvLine(line);
 
-            if (isVar) {
+            if (parsed) {
                 blocks.push({
                     header: currentHeader,
                     entry: line,
-                    key: line.split('=')[0].trim()
+                    key: parsed.key
                 });
                 currentHeader = [];
             } else if (line.trim() !== '') {
@@ -92,3 +93,4 @@ export function sort(args) {
     fs.writeFileSync(targetPath, sortedLines.join('\n') + '\n');
     console.log(colorText(COLORS.SUCCESS, `Sorted keys in ${targetFile}`));
 }
+
